@@ -172,6 +172,14 @@ html {
   line-height: 1;
   text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   margin-bottom: 10px;
+  cursor: pointer;
+  /* Clickable */
+  transition: transform 0.1s ease;
+}
+
+.score-display:active {
+  transform: scale(0.95);
+  /* Click feedback */
 }
 
 .team-a .score-display {
@@ -181,39 +189,6 @@ html {
 .team-b .score-display {
   color: var(--color-team-b);
 }
-
-/* Score Controls */
-.score-controls {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-}
-
-.control-btn {
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  color: var(--text-primary);
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.control-btn:active {
-  background: rgba(255, 255, 255, 0.25);
-  transform: scale(0.95);
-}
-
-.plus-btn {
-  width: 100px;
-  height: 100px;
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.4);
-}
-
 
 /* Center Controls (Reset, Swap, Undo) */
 .center-controls {
@@ -368,16 +343,6 @@ html {
     bottom: 20px;
     /* Adjust if needed */
     padding: 8px 16px;
-  }
-
-  .control-btn {
-    width: 45px;
-    height: 45px;
-  }
-
-  .plus-btn {
-    width: 60px;
-    height: 60px;
   }
 
   /* Hide server dots on portrait if they clutter? No, keep them. */
