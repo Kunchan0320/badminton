@@ -141,7 +141,6 @@ function checkWinner() {
     const { scoreA, scoreB } = state;
     let hasWinner = false;
     let winnerName = "";
-
     if (scoreA >= 21 || scoreB >= 21) {
         const diff = Math.abs(scoreA - scoreB);
         if (scoreA === MAX_SCORE) { hasWinner = true; winnerName = "Team A"; }
@@ -307,6 +306,26 @@ function render() {
         else dotBOdd.classList.remove('hidden');
     }
 }
+
+// Menu Toggle Logic
+function toggleMenu() {
+    const menu = document.getElementById('control-menu');
+    menu.classList.toggle('expanded');
+    menu.classList.toggle('minimized');
+}
+
+// Close menu when clicking outside
+document.addEventListener('click', function (event) {
+    const menu = document.getElementById('control-menu');
+    const toggleBtn = document.querySelector('.menu-toggle');
+
+    // If click is outside menu and toggle button, and menu is expanded
+    if (menu.classList.contains('expanded') &&
+        !menu.contains(event.target) &&
+        !toggleBtn.contains(event.target)) {
+        toggleMenu();
+    }
+});
 
 // Run
 init();
