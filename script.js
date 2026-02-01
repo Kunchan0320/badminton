@@ -29,27 +29,23 @@ function init() {
 }
 
 // Actions
-function handleScore(team, delta = 1) {
+function handleScore(team, delta) {
     if (state.gameEnded) return;
 
-    // Check bounds for deduction
-    if (delta < 0) {
-        if (team === 'A' && state.scoreA <= 0) return;
-        if (team === 'B' && state.scoreB <= 0) return;
-    }
+    const currentScore = team === 'A' ? state.scoreA : state.scoreB;
+    const newScore = currentScore + delta;
 
-    // Push state to history for undo
+    // Prevent negative scores
+    if (newScore < 0) return;
+
+    // Push state to history for undo BEFORE updating
     pushHistory();
 
     if (team === 'A') {
-        state.scoreA += delta;
+        state.scoreA = newScore;
     } else {
-        state.scoreB += delta;
+        state.scoreB = newScore;
     }
-
-    // Cap at MAX_SCORE ? (Logic handled in checkWinner mostly, but prevent overflow manually)
-    if (state.scoreA > MAX_SCORE) state.scoreA = MAX_SCORE;
-    if (state.scoreB > MAX_SCORE) state.scoreB = MAX_SCORE;
 
     checkWinner();
     render();

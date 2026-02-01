@@ -14,55 +14,32 @@
 
 <body>
     <div class="app-container">
-        <!-- 上方隊伍 (Team A) -->
+        <!-- 左側隊伍 (Team A) -->
         <div class="team-section team-a" id="team-a-area">
-            <div class="click-area" onclick="handleScore('A', 1)"></div>
-            <div class="team-info">
-                <input type="text" class="team-name" id="name-a" value="Team A" onclick="event.stopPropagation()">
+            <div class="team-header">
+                <input type="text" class="team-name" id="name-a" value="Team A">
+                <div class="server-indicator hidden" id="server-a"></div>
             </div>
-            <div class="score-display">
-                <span id="score-a">0</span>
+
+            <div class="score-display" id="score-a">0</div>
+
+            <div class="score-controls">
+                <button class="control-btn minus-btn" onclick="handleScore('A', -1)" aria-label="Decrease Score">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M5 12H19" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+                    </svg>
+                </button>
+                <button class="control-btn plus-btn" onclick="handleScore('A', 1)" aria-label="Increase Score">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </button>
             </div>
-            <button class="btn-deduct" onclick="handleScore('A', -1); event.stopPropagation()"
-                aria-label="Decrease Score A">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                </svg>
-            </button>
-            <div class="server-indicator" id="server-a"></div>
         </div>
 
-        <!-- 下方隊伍 (Team B) -->
-        <div class="team-section team-b" id="team-b-area">
-            <div class="click-area" onclick="handleScore('B', 1)"></div>
-            <div class="team-info">
-                <input type="text" class="team-name" id="name-b" value="Team B" onclick="event.stopPropagation()">
-            </div>
-            <div class="score-display">
-                <span id="score-b">0</span>
-            </div>
-            <button class="btn-deduct" onclick="handleScore('B', -1); event.stopPropagation()"
-                aria-label="Decrease Score B">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                </svg>
-            </button>
-            <div class="server-indicator hidden" id="server-b"></div>
-        </div>
-
-        <!-- 控制列 -->
-        <div class="controls">
-            <button class="btn-icon" onclick="undoLastAction()" aria-label="Undo">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M9 14L4 9L9 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" />
-                    <path d="M20 20V13C20 11.9391 19.5786 10.9217 18.8284 10.1716C18.0783 9.42143 17.0609 9 16 9H4"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-                <span>撤銷</span>
-            </button>
+        <!-- 中間控制列 (Landscape Layout) -->
+        <div class="center-controls">
             <button class="btn-icon" onclick="swapSides()" aria-label="Swap">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M7 16V4M7 4L3 8M7 4L11 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -72,6 +49,17 @@
                 </svg>
                 <span>換邊</span>
             </button>
+
+            <button class="btn-icon" onclick="undoLastAction()" aria-label="Undo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 14L4 9L9 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M20 20V13C20 11.9391 19.5786 10.9217 18.8284 10.1716C18.0783 9.42143 17.0609 9 16 9H4"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span>撤銷</span>
+            </button>
+
             <button class="btn-icon danger" onclick="resetGame()" aria-label="Reset">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
@@ -82,6 +70,30 @@
                 </svg>
                 <span>重置</span>
             </button>
+        </div>
+
+        <!-- 右側隊伍 (Team B) -->
+        <div class="team-section team-b" id="team-b-area">
+            <div class="team-header">
+                <input type="text" class="team-name" id="name-b" value="Team B">
+                <div class="server-indicator hidden" id="server-b"></div>
+            </div>
+
+            <div class="score-display" id="score-b">0</div>
+
+            <div class="score-controls">
+                <button class="control-btn minus-btn" onclick="handleScore('B', -1)" aria-label="Decrease Score">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M5 12H19" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+                    </svg>
+                </button>
+                <button class="control-btn plus-btn" onclick="handleScore('B', 1)" aria-label="Increase Score">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                </button>
+            </div>
         </div>
 
         <!-- 勝利彈窗 -->
