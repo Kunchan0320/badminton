@@ -1,0 +1,218 @@
+:root {
+  --bg-color: #121212;
+  --text-primary: #ffffff;
+  --text-secondary: #aaaaaa;
+  
+  --color-team-a: #FF4B4B; /* Reddish */
+  --color-team-b: #4B7BFF; /* Blueish */
+  --color-team-a-dim: #3a1515;
+  --color-team-b-dim: #151d3a;
+  
+  --font-main: 'Outfit', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+}
+
+body, html {
+  height: 100%;
+  width: 100%;
+  background-color: var(--bg-color);
+  font-family: var(--font-main);
+  color: var(--text-primary);
+  overflow: hidden; /* Prevent scrolling */
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+/* Team Sections */
+.team-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+  user-select: none;
+}
+
+.team-section:active {
+  opacity: 0.9;
+}
+
+.team-a {
+  background-color: var(--color-team-a-dim);
+  border-bottom: 2px solid rgba(255,255,255,0.1);
+  transform: rotate(180deg); /* Player facing opponent */
+}
+
+.team-b {
+  background-color: var(--color-team-b-dim);
+}
+
+/* Team Info & Score */
+.team-info {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 10;
+}
+
+.team-name {
+  background: transparent;
+  border: none;
+  font-family: var(--font-main);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.7);
+  width: 200px;
+  outline: none;
+}
+
+.team-name:focus {
+  color: var(--text-primary);
+  border-bottom: 1px solid rgba(255,255,255,0.3);
+}
+
+.score-display {
+  font-size: 12rem;
+  font-weight: 900;
+  line-height: 1;
+  text-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.team-a .score-display {
+  color: var(--color-team-a);
+}
+
+.team-b .score-display {
+  color: var(--color-team-b);
+}
+
+/* Server Indicator */
+.server-indicator {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 30px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(255,255,255,0.8);
+  transition: opacity 0.3s ease;
+  opacity: 1;
+}
+
+.server-indicator.hidden {
+  opacity: 0;
+}
+
+/* Controls */
+.controls {
+  height: 80px;
+  background-color: #1e1e1e;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: env(safe-area-inset-bottom); /* iOS support */
+}
+
+.btn-icon {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.btn-icon:active {
+  background-color: rgba(255,255,255,0.1);
+  transform: scale(0.95);
+}
+
+.btn-icon span {
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.btn-icon.danger {
+  color: #ff6b6b;
+}
+
+/* Modal */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  backdrop-filter: blur(5px);
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-content {
+  background-color: #1e1e1e;
+  padding: 40px;
+  border-radius: 24px;
+  text-align: center;
+  border: 1px solid rgba(255,255,255,0.1);
+  width: 80%;
+  max-width: 320px;
+}
+
+.modal-content h2 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  color: var(--text-primary);
+}
+
+.modal-content p {
+  font-size: 3rem; /* Huge score */
+  font-weight: 900;
+  margin-bottom: 30px;
+  color: var(--text-secondary);
+}
+
+.modal-content button {
+  background-color: var(--text-primary);
+  color: #000;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+  transition: transform 0.2s;
+}
+
+.modal-content button:active {
+  transform: scale(0.98);
+}
