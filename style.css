@@ -141,20 +141,58 @@ html {
   z-index: 30;
 }
 
+/* Team Content Wrapper (Holds Courts + Score) */
+.team-content {
+  flex: 1;
+  /* Take remaining height */
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  /* Default: Courts Left, Score Right */
+  align-items: stretch;
+  /* Ensure both columns are full height */
+  overflow: hidden;
+  /* Prevent container expansion */
+}
+
+.team-b .team-content {
+  flex-direction: row-reverse;
+  /* Score Left, Courts Right for Team B */
+}
+
+/* Court Container (Players) */
+.court-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  gap: 0;
+  width: 40%;
+  /* Fallback */
+  flex: 0 0 40%;
+  /* Rigid 40% width */
+  padding: 10px;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.team-b .court-container {
+  border-right: none;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  /* Separator on left for Team B */
+}
+
 /* Court Box */
 .court-box {
   background-color: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   padding: 10px;
-  /* Reduced padding */
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
   position: relative;
   height: 45%;
-  /* Increased height slightly to fill space better */
+  /* 45% of container height */
   width: 100%;
 }
 
@@ -209,18 +247,18 @@ html {
 
 /* Score Display */
 .score-display {
-  font-size: 40vh;
-  /* Huge font */
+  font-size: 30vh;
+  /* Reduced from 40vh to prevent overflow issues */
   font-weight: 900;
   line-height: 1;
   text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   margin: 0;
   cursor: pointer;
-  width: 60%;
-  /* Score takes 60% width */
+  flex: 1;
+  /* Take remaining space (60%) */
   display: flex;
   justify-content: center;
-  /* Center horizontally in its box */
+  /* Center horizontally */
   align-items: center;
   /* Center vertically */
   overflow: hidden;
@@ -233,13 +271,11 @@ html {
 .team-a .score-display {
   color: var(--color-team-a);
   padding: 0;
-  /* Centered in its flex item */
 }
 
 .team-b .score-display {
   color: var(--color-team-b);
   padding: 0;
-  /* Centered in its flex item */
 }
 
 /* Center Controls (Collapsible Menu) */

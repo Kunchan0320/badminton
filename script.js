@@ -5,8 +5,8 @@ let state = {
     // Players: [Name, isEvenCourt]
     // We store who is in the Even court for each team. The other is in Odd.
     // playersA: ['A1', 'A2'] -> teamA[0] is initial even, teamA[1] is initial odd
-    playersA: ['Player A1', 'Player A2'],
-    playersB: ['Player B1', 'Player B2'],
+    playersA: ['A1', 'A2'],
+    playersB: ['B1', 'B2'],
 
     // Team Names
     teamNameA: "Team A",
