@@ -43,12 +43,15 @@ html {
 }
 
 /* Team Sections */
+/* Team Sections */
 .team-section {
   flex: 1;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row;
   align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  /* Outer spacing */
   position: relative;
   transition: background-color 0.2s ease;
   user-select: none;
@@ -58,19 +61,32 @@ html {
 .team-a {
   background-color: var(--color-team-a-dim);
   border-right: 2px solid rgba(255, 255, 255, 0.1);
-  /* Split line */
+  /* Info on Left (Default), Score on Right */
 }
 
 .team-b {
   background-color: var(--color-team-b-dim);
+  flex-direction: row-reverse;
+  /* Info on Right, Score on Left */
+}
+
+/* Info Wrapper */
+.info-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  width: 60%;
+  /* Take up significant space for names */
+  max-width: 300px;
 }
 
 /* Team Header */
 .team-header {
-  position: absolute;
-  top: 15px;
+  position: relative;
+  top: auto;
   width: 100%;
-  padding: 0 20px;
+  padding: 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -84,7 +100,7 @@ html {
 }
 
 .team-label {
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.7);
 }
@@ -102,10 +118,9 @@ html {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  width: 60%;
-  margin-bottom: 10px;
-  margin-top: 50px;
-  /* Space for header */
+  width: 100%;
+  margin-bottom: 0;
+  margin-top: 0;
 }
 
 .court-box {
@@ -298,9 +313,15 @@ html {
   }
 
   .team-section {
+    flex-direction: column;
+    /* Stack top-to-bottom */
     justify-content: flex-start;
-    /* Stack from top instead of center */
-    padding-top: 10px;
+    padding: 10px;
+  }
+
+  /* Reset Row Reverse for Team B */
+  .team-b {
+    flex-direction: column;
   }
 
   .team-a {
@@ -308,42 +329,37 @@ html {
     border-bottom: 2px solid rgba(255, 255, 255, 0.1);
   }
 
-  /* Reset absolute positioning for header in portrait to avoid overlap */
-  .team-header {
-    position: relative;
-    top: auto;
+  /* Info Wrapper takes full width in portrait */
+  .info-wrapper {
+    width: 100%;
+    max-width: none;
     margin-bottom: 10px;
   }
 
-  .court-container {
-    margin-top: 0;
-    /* No need for spacer since header is relative */
-    width: 80%;
-    /* Wider on mobile */
-    gap: 4px;
+  .team-header {
     margin-bottom: 5px;
   }
 
+  .court-container {
+    width: 90%;
+    gap: 4px;
+  }
+
   .court-box {
-    height: 35px;
-    padding: 4px 10px;
+    height: 40px;
   }
 
   .player-name {
-    font-size: 0.9rem;
+    font-size: 1rem;
   }
 
   .score-display {
-    font-size: 6rem;
-    /* Smaller score to fit everything */
+    font-size: 7rem;
     margin-bottom: 10px;
   }
 
   .center-controls {
     bottom: 20px;
-    /* Adjust if needed */
     padding: 8px 16px;
   }
-
-  /* Hide server dots on portrait if they clutter? No, keep them. */
 }
