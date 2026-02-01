@@ -200,10 +200,10 @@ html {
   /* Clickable */
   transition: transform 0.1s ease;
   flex: 1;
-  /* Allow it to take remaining space but center it */
-  text-align: center;
+  /* Allow it to take remaining space */
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
+  /* Push content towards the 'end' (Center line) */
   align-items: center;
 }
 
@@ -214,10 +214,15 @@ html {
 
 .team-a .score-display {
   color: var(--color-team-a);
+  padding-right: 20px;
+  /* Space from center line */
 }
 
 .team-b .score-display {
   color: var(--color-team-b);
+  padding-left: 20px;
+  /* Space from center line */
+  /* Note: In row-reverse, padding-left is physically on the left, which is the center line */
 }
 
 /* Center Controls (Reset, Swap, Undo) */
