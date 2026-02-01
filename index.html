@@ -27,7 +27,22 @@
                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                     </button>
-                    <div class="server-indicator hidden" id="server-indicator-a"></div> <!-- Team Indicator -->
+                    <button class="server-btn" id="server-btn-a" onclick="setServingTeam('A')" aria-label="Set Server">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="icon-shuttlecock">
+                            <path d="M12 2L15 8H9L12 2Z" fill="currentColor" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M15 8C15 8 16.5 14 12 14C7.5 14 9 8 9 8" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M9 14H15" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <path d="M10.5 14V22" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <path d="M13.5 14V22" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <path d="M9 22H15" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </button>
                 </div>
             </div>
 
@@ -109,13 +124,28 @@
                     <input type="text" class="team-label" id="team-name-b" value="Team B" readonly>
                     <button class="edit-btn" onclick="toggleEditNames()" aria-label="Edit Names">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="icon-edit">
-                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                             <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor"
                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                     </button>
-                    <div class="server-indicator hidden" id="server-indicator-b"></div> <!-- Team Indicator -->
+                    <button class="server-btn" id="server-btn-b" onclick="setServingTeam('B')" aria-label="Set Server">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="icon-shuttlecock">
+                            <path d="M12 2L15 8H9L12 2Z" fill="currentColor" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M15 8C15 8 16.5 14 12 14C7.5 14 9 8 9 8" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M9 14H15" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <path d="M10.5 14V22" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <path d="M13.5 14V22" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <path d="M9 22H15" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </button>
                 </div>
             </div>
 

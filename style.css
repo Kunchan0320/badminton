@@ -141,6 +141,34 @@ html {
   z-index: 30;
 }
 
+.server-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.2);
+  /* Inactive color */
+  cursor: pointer;
+  margin-left: 10px;
+  /* Space between buttons */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  pointer-events: auto;
+  z-index: 30;
+  transition: all 0.3s ease;
+}
+
+.server-btn:hover {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.server-btn.active {
+  color: #ffda00;
+  /* Active Yellow */
+  filter: drop-shadow(0 0 5px rgba(255, 218, 0, 0.8));
+  transform: scale(1.1);
+}
+
 /* Team Content Wrapper (Holds Courts + Score) */
 .team-content {
   flex: 1;
@@ -247,10 +275,11 @@ html {
 
 /* Score Display */
 .score-display {
-  font-size: 30vh;
-  /* Reduced from 40vh to prevent overflow issues */
+  font-size: 48vh;
+  /* Maximized font size */
   font-weight: 900;
-  line-height: 1;
+  line-height: 0.75;
+  /* Tight line height to prevent layout push */
   text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   margin: 0;
   cursor: pointer;

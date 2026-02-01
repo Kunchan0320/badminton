@@ -286,6 +286,17 @@ function closeModalAndReset() {
     resetGame();
 }
 
+const serverBtnA = document.getElementById('server-btn-a');
+const serverBtnB = document.getElementById('server-btn-b');
+
+function setServingTeam(team) {
+    if (state.servingTeam === team) return;
+
+    pushHistory();
+    state.servingTeam = team;
+    render();
+}
+
 function render() {
     scoreElA.innerText = state.scoreA;
     scoreElB.innerText = state.scoreB;
@@ -303,29 +314,24 @@ function render() {
         nameInputB2.value = state.playersB[1 - state.evenCourtPlayerIndexB];
     }
 
-    // Render Positions & Server Dot
-    // We need to visually show who is in Even vs Odd box.
-    // Our HTML structure:
-    // Box 1: Even Court
-    // Box 2: Odd Court
+    // Server Indicator - Header Buttons
+    if (serverBtnA && serverBtnB) {
+        if (state.servingTeam === 'A') {
+            serverBtnA.classList.add('active');
+            serverBtnB.classList.remove('active');
+        } else {
+            serverBtnA.classList.remove('active');
+            serverBtnB.classList.add('active');
+        }
+    }
 
-    // Team A:
-    // evenCourtPlayerIndexA tells us WHICH player (0 or 1) is in Even Box.
-    // So current Even Box Name = playersA[state.evenCourtPlayerIndexA]
-    // Current Odd Box Name = playersA[1 - state.evenCourtPlayerIndexA]
-
-
-    // Server Indicator
-    // Hide all first
+    // Server Dot (On Court)
     dotAEven.classList.add('hidden');
     dotAOdd.classList.add('hidden');
     dotBEven.classList.add('hidden');
     dotBOdd.classList.add('hidden');
 
     if (state.servingTeam === 'A') {
-        // Who is serving? 
-        // If scoreA is Even -> Even Box gets dot.
-        // If scoreA is Odd -> Odd Box gets dot.
         if (state.scoreA % 2 === 0) dotAEven.classList.remove('hidden');
         else dotAOdd.classList.remove('hidden');
     } else {
