@@ -77,96 +77,91 @@ html {
 /* Team Header */
 .team-header {
   width: 100%;
-  height: 60px;
-  /* Fixed header height */
+  height: 45px;
+  /* Reduced from 60px */
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.2);
-  /* Slight darken for header area */
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 0 20px;
+  padding: 0 10px;
+  position: relative;
+  z-index: 20;
+  /* Ensure header is above other layers */
 }
 
-/* Team Content Wrapper (Holds Courts + Score) */
-.team-content {
-  flex: 1;
-  /* Take remaining height */
-  width: 100%;
+.team-title-row {
   display: flex;
   flex-direction: row;
-  /* Default: Courts Left, Score Right */
-  align-items: stretch;
-}
-
-.team-b .team-content {
-  flex-direction: row-reverse;
-  /* Score Left, Courts Right for Team B */
-}
-
-/* Info Wrapper Removed / Replaced by Court Container Styling */
-/* Court Container (Players) */
-.court-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  /* Evenly space the 2 boxes vertical */
-  gap: 0;
-  width: 40%;
-  /* Players take 40% width */
-  padding: 10px;
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
-  /* Separator line between players and score */
-}
-
-.team-b .court-container {
-  border-right: none;
-  border-left: 1px solid rgba(255, 255, 255, 0.1);
-  /* Separator on left for Team B */
-}
-
-/* Removed old header positioning */
-
-/* Court Box */
-.court-box {
-  background-color: rgba(255, 255, 255, 0.05);
-  /* Lighter background */
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 15px;
-  display: flex;
-  flex-direction: column;
-  /* Stack label and name */
+  align-items: center;
   justify-content: center;
-  align-items: flex-start;
-  position: relative;
-  height: 40%;
-  /* Fill significant portion of height */
   width: 100%;
+  position: relative;
 }
 
 .team-label {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
+  /* Reduced from 1.5rem */
   font-weight: 700;
   color: rgba(255, 255, 255, 0.9);
   background: transparent;
   border: none;
   width: auto;
-  min-width: 100px;
+  min-width: 80px;
+  max-width: 150px;
   text-align: center;
   outline: none;
   font-family: var(--font-main);
+  pointer-events: none;
+  /* Default readonly */
 }
 
-.team-label.editable {
+.team-label.editable,
+.player-name.editable {
+  pointer-events: auto;
+  user-select: text;
+  cursor: text;
   border-bottom: 1px solid rgba(255, 255, 255, 0.5);
   background: rgba(255, 255, 255, 0.1);
 }
 
+.edit-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  margin-left: 10px;
+  /* Space between name and button */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  pointer-events: auto;
+  /* Always clickable */
+  z-index: 30;
+}
+
+/* Court Box */
+.court-box {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 10px;
+  /* Reduced padding */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  position: relative;
+  height: 45%;
+  /* Increased height slightly to fill space better */
+  width: 100%;
+}
+
 .court-label {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: rgba(255, 255, 255, 0.6);
-  margin-bottom: 5px;
+  margin-bottom: 2px;
   width: auto;
 }
 
@@ -175,19 +170,20 @@ html {
   border: none;
   color: var(--text-primary);
   font-family: var(--font-main);
-  font-size: 1.5rem;
-  /* Larger font */
+  font-size: 1.1rem;
+  /* Reduced from 1.5rem to prevent truncation */
   width: 100%;
   text-align: left;
   outline: none;
   pointer-events: none;
   /* Default readonly */
-  font-weight: 700;
+  font-weight: 600;
+  /* Slightly less bold */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   border-bottom: 2px solid transparent;
-  /* Prepare for edit underlining */
+  z-index: 5;
 }
 
 /* Server Dot Indicator */
