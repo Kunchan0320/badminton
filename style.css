@@ -44,17 +44,16 @@ html {
 
 /* Team Sections */
 /* Team Sections */
+/* Team Sections */
 .team-section {
   flex: 1;
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
-  /* Align content to top */
+  align-items: center;
+  /* Vertically Center */
   justify-content: space-between;
-  /* Push items to edges */
-  padding: 20px 20px 0 20px;
-  /* Slight top padding, minimal */
-  /* Reduced outer spacing */
+  padding: 0 20px;
+  /* Reset padding */
   position: relative;
   transition: background-color 0.2s ease;
   user-select: none;
@@ -70,7 +69,7 @@ html {
 .team-b {
   background-color: var(--color-team-b-dim);
   flex-direction: row-reverse;
-  /* Info on Right, Score on Left */
+  /* Info on Right, Score on Left (Center) */
 }
 
 /* Info Wrapper */
@@ -79,8 +78,8 @@ html {
   flex-direction: column;
   align-items: center;
   gap: 15px;
-  width: 45%;
-  /* Validate shrink */
+  width: 40%;
+  /* Shrink slightly more to give room for score */
   max-width: 220px;
   /* Restrict width */
 }
@@ -192,8 +191,8 @@ html {
 
 /* Score Display */
 .score-display {
-  font-size: 15vh;
-  /* Responsive font based on viewport height */
+  font-size: 35vh;
+  /* Massive font */
   font-weight: 900;
   line-height: 1;
   text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
@@ -207,6 +206,8 @@ html {
   justify-content: flex-end;
   /* Push content towards the 'end' (Center line) */
   align-items: center;
+  overflow: hidden;
+  /* Prevent spill */
 }
 
 .score-display:active {
@@ -216,14 +217,14 @@ html {
 
 .team-a .score-display {
   color: var(--color-team-a);
-  padding-right: 20px;
-  /* Space from center line */
+  padding-right: 5px;
+  /* Tighter to center */
 }
 
 .team-b .score-display {
   color: var(--color-team-b);
-  padding-left: 20px;
-  /* Space from center line */
+  padding-left: 5px;
+  /* Tighter to center */
   /* Note: In row-reverse, padding-left is physically on the left, which is the center line */
 }
 
