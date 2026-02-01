@@ -2,8 +2,25 @@
 let state = {
     scoreA: 0,
     scoreB: 0,
+    // Players: [Name, isEvenCourt]
+    // We store who is in the Even court for each team. The other is in Odd.
+    // playersA: ['A1', 'A2'] -> teamA[0] is initial even, teamA[1] is initial odd
+    playersA: ['Player A1', 'Player A2'],
+    playersB: ['Player B1', 'Player B2'],
+
+    // Who is currently in the EVEN court? (Index 0 or 1 of players array)
+    // Initially A1 (0) in Even, A2 (1) in Odd.
+    evenCourtPlayerIndexA: 0,
+    evenCourtPlayerIndexB: 0,
+
+    // Server state
+    servingTeam: 'A', // 'A' or 'B'
+    initialServerIndexA: 0, // Who served first for A?
+    initialServerIndexB: 0, // Who served first for B?
+
     history: [], // Stack for undo
-    gameEnded: false
+    gameEnded: false,
+    editingNames: false
 };
 
 const MAX_SCORE = 30; // Maximum cap
@@ -15,22 +32,61 @@ const RULES = {
 // DOM Elements
 const scoreElA = document.getElementById('score-a');
 const scoreElB = document.getElementById('score-b');
-const areaA = document.getElementById('team-a-area');
-const areaB = document.getElementById('team-b-area'); // Although we score by clicking
+
+const nameInputA1 = document.getElementById('name-a1');
+const nameInputA2 = document.getElementById('name-a2');
+const nameInputB1 = document.getElementById('name-b1');
+const nameInputB2 = document.getElementById('name-b2');
+
+// Server Dots
+const dotAEven = document.getElementById('server-a-even');
+const dotAOdd = document.getElementById('server-a-odd');
+const dotBEven = document.getElementById('server-b-even');
+const dotBOdd = document.getElementById('server-b-odd');
+
 const modal = document.getElementById('winner-modal');
 const winnerText = document.getElementById('winner-text');
 const finalScore = document.getElementById('final-score');
-const nameInputA = document.getElementById('name-a');
-const nameInputB = document.getElementById('name-b');
 
 // Initialization
 function init() {
     render();
 }
 
+// Logic: Who is serving?
+// In Doubles:
+// Warning: This logic is complex.
+// Simplified tracked state: 
+// We just need to know who is standing where.
+// The Server is ALWAYS determined by the score of the serving team.
+// If score is Even -> Person in Even court serves.
+// If score is Odd -> Person in Odd court serves.
+
+function getCurrentServerIndex(team) {
+    // Return index of player (0 or 1) who is currently serving for this team
+    // Based on CURRENT score and their positions
+
+    // Logic: The server is the person standing in the court corresponding to the score.
+    // Score Even -> Even Court Player
+    // Score Odd -> Odd Court Player
+    // But we track `evenCourtPlayerIndex`.
+    // If score is Even, the server is `evenCourtPlayerIndex`.
+    // If score is Odd, the server is the OTHER player (1 - evenCourtPlayerIndex).
+
+    const score = team === 'A' ? state.scoreA : state.scoreB;
+    const isScoreEven = score % 2 === 0;
+    const evenPlayerIndex = team === 'A' ? state.evenCourtPlayerIndexA : state.evenCourtPlayerIndexB;
+
+    if (isScoreEven) return evenPlayerIndex;
+    return 1 - evenPlayerIndex;
+}
+
 // Actions
 function handleScore(team, delta) {
     if (state.gameEnded) return;
+
+    // Push state to history for undo
+    pushHistory();
 
     const currentScore = team === 'A' ? state.scoreA : state.scoreB;
     const newScore = currentScore + delta;
@@ -38,8 +94,38 @@ function handleScore(team, delta) {
     // Prevent negative scores
     if (newScore < 0) return;
 
-    // Push state to history for undo BEFORE updating
-    pushHistory();
+    // Logic for Position Swapping (Doubles)
+    // Only swap if the SCORING team was ALREADY Serving and delta is positive (won a point)
+    // If receiving team wins point, NO swap, just Side Out (change serving team).
+
+    if (delta > 0) {
+        if (state.servingTeam === team) {
+            // Serving team won point -> SAME server continues, but SWAP courts (positions)
+            // To swap courts, we just toggle the `evenCourtPlayerIndex`
+            if (team === 'A') {
+                state.evenCourtPlayerIndexA = 1 - state.evenCourtPlayerIndexA;
+            } else {
+                state.evenCourtPlayerIndexB = 1 - state.evenCourtPlayerIndexB;
+            }
+            // Score goes up
+        } else {
+            // Receiving team won point -> Side Out.
+            // NO POSITION SWAP for anyone.
+            // Just change serving team.
+            state.servingTeam = team;
+        }
+    } else {
+        // Subtraction (correction)
+        // This is tricky. We need to reverse the logic. 
+        // Simplest way is to just rely on History Undo, but if we support manual minus:
+        // We probably need to revert position swap if it was a serving team point.
+        // But since we don't store "who won last point" in simple state, minus button might desync positions if we don't use full history.
+        // For this simple implementation, Manual Minus effectively just reduces score without fixing positions intelligently unless we assume last action was a point.
+        // Recommendation: Use Undo for corrections. Minus button purely for score adjustment?
+        // Let's make Minus button purely score adjustment, but warn user or maybe disable position swap?
+        // Actually, for "Correction", usually you want to undo everything.
+        // Let's just adjust score. User can manually swap if needed or use Undo.
+    }
 
     if (team === 'A') {
         state.scoreA = newScore;
@@ -53,33 +139,16 @@ function handleScore(team, delta) {
 
 function checkWinner() {
     const { scoreA, scoreB } = state;
-
-    // Standard rule: 21 points, must lead by 2
-    // If deuce (20-20), continue until lead by 2 or reach 30
-
     let hasWinner = false;
     let winnerName = "";
 
     if (scoreA >= 21 || scoreB >= 21) {
         const diff = Math.abs(scoreA - scoreB);
-
-        // Reached 30 (Hard cap)
-        if (scoreA === MAX_SCORE) {
-            hasWinner = true;
-            winnerName = getName('A');
-        } else if (scoreB === MAX_SCORE) {
-            hasWinner = true;
-            winnerName = getName('B');
-        }
-        // Lead by 2
+        if (scoreA === MAX_SCORE) { hasWinner = true; winnerName = "Team A"; }
+        else if (scoreB === MAX_SCORE) { hasWinner = true; winnerName = "Team B"; }
         else if (diff >= 2) {
-            if (scoreA > scoreB) {
-                hasWinner = true;
-                winnerName = getName('A');
-            } else {
-                hasWinner = true;
-                winnerName = getName('B');
-            }
+            hasWinner = true;
+            winnerName = scoreA > scoreB ? "Team A" : "Team B";
         }
     }
 
@@ -93,58 +162,89 @@ function undoLastAction() {
     if (state.history.length === 0) return;
 
     const lastState = state.history.pop();
+    // Restore all properties
     state.scoreA = lastState.scoreA;
     state.scoreB = lastState.scoreB;
-    state.gameEnded = false; // Resume game if it was ended
+    state.servingTeam = lastState.servingTeam;
+    state.evenCourtPlayerIndexA = lastState.evenCourtPlayerIndexA;
+    state.evenCourtPlayerIndexB = lastState.evenCourtPlayerIndexB;
+    state.playersA = [...lastState.playersA]; // copy back
+    state.playersB = [...lastState.playersB];
 
-    modal.classList.add('hidden'); // Hide modal if open
+    state.gameEnded = false;
+    modal.classList.add('hidden');
     render();
 }
 
 function resetGame() {
-    // Confirm? Maybe too annoying for simple app, direct reset is faster but creating a history point before reset is safer
     pushHistory();
-
     state.scoreA = 0;
     state.scoreB = 0;
     state.gameEnded = false;
-    state.history = []; // Clear history on full reset? Or keep it? Let's clear for fresh start.
+    // Reset positions to initial? Or keep current names?
+    // Usually names stay, positions reset to standard (0 in even)
+    state.evenCourtPlayerIndexA = 0;
+    state.evenCourtPlayerIndexB = 0;
+    state.servingTeam = 'A'; // Default to A first? Or random? Let's say A.
 
     render();
 }
 
 function swapSides() {
-    // Visual swap? Or data swap? 
-    // Usually in casual apps, swapping sides means swapping the scores displayed on top/bottom
-    // Actually, physically swapping the phone is easier, but if we want to swap the "Team A" and "Team B" positions:
-
     pushHistory();
-
+    // Swap Scores
     const tempScore = state.scoreA;
     state.scoreA = state.scoreB;
     state.scoreB = tempScore;
 
-    const tempName = nameInputA.value;
-    nameInputA.value = nameInputB.value;
-    nameInputB.value = tempName;
+    // Swap Names/Players Arrays
+    const tempPlayers = [...state.playersA];
+    state.playersA = [...state.playersB];
+    state.playersB = tempPlayers;
+
+    // Swap Positions indices
+    const tempIndex = state.evenCourtPlayerIndexA;
+    state.evenCourtPlayerIndexA = state.evenCourtPlayerIndexB;
+    state.evenCourtPlayerIndexB = tempIndex;
+
+    // Swap Serving Status
+    if (state.servingTeam === 'A') state.servingTeam = 'B';
+    else state.servingTeam = 'A';
 
     render();
 }
 
-// Helpers
-function pushHistory() {
-    // Deep copy necessary state
-    state.history.push({
-        scoreA: state.scoreA,
-        scoreB: state.scoreB
+function toggleEditNames() {
+    state.editingNames = !state.editingNames;
+    const inputs = document.querySelectorAll('.player-name');
+    inputs.forEach(input => {
+        if (state.editingNames) {
+            input.classList.add('editable');
+            input.removeAttribute('readonly');
+        } else {
+            input.classList.remove('editable');
+            input.setAttribute('readonly', true);
+            // Save names to state
+            state.playersA[0] = nameInputA1.value;
+            state.playersA[1] = nameInputA2.value;
+            state.playersB[0] = nameInputB1.value;
+            state.playersB[1] = nameInputB2.value;
+        }
     });
-
-    // Limit history size to save memory? Not really needed for simple app
-    if (state.history.length > 50) state.history.shift();
 }
 
-function getName(team) {
-    return team === 'A' ? nameInputA.value : nameInputB.value;
+// Helpers
+function pushHistory() {
+    state.history.push({
+        scoreA: state.scoreA,
+        scoreB: state.scoreB,
+        servingTeam: state.servingTeam,
+        evenCourtPlayerIndexA: state.evenCourtPlayerIndexA,
+        evenCourtPlayerIndexB: state.evenCourtPlayerIndexB,
+        playersA: [...state.playersA],
+        playersB: [...state.playersB]
+    });
+    if (state.history.length > 50) state.history.shift();
 }
 
 function showWinModal(winner, sA, sB) {
@@ -155,17 +255,57 @@ function showWinModal(winner, sA, sB) {
 
 function closeModalAndReset() {
     modal.classList.add('hidden');
-    // Start new game but keep names
-    state.scoreA = 0;
-    state.scoreB = 0;
-    state.gameEnded = false;
-    state.history = [];
-    render();
+    resetGame();
 }
 
 function render() {
     scoreElA.innerText = state.scoreA;
     scoreElB.innerText = state.scoreB;
+
+    // Update Names values if not editing (to sync with state)
+    if (!state.editingNames) {
+        nameInputA1.value = state.playersA[0];
+        nameInputA2.value = state.playersA[1];
+        nameInputB1.value = state.playersB[0];
+        nameInputB2.value = state.playersB[1];
+    }
+
+    // Render Positions & Server Dot
+    // We need to visually show who is in Even vs Odd box.
+    // Our HTML structure:
+    // Box 1: Even Court
+    // Box 2: Odd Court
+
+    // Team A:
+    // evenCourtPlayerIndexA tells us WHICH player (0 or 1) is in Even Box.
+    // So current Even Box Name = playersA[state.evenCourtPlayerIndexA]
+    // Current Odd Box Name = playersA[1 - state.evenCourtPlayerIndexA]
+
+    if (!state.editingNames) {
+        nameInputA1.value = state.playersA[state.evenCourtPlayerIndexA];
+        nameInputA2.value = state.playersA[1 - state.evenCourtPlayerIndexA];
+
+        nameInputB1.value = state.playersB[state.evenCourtPlayerIndexB];
+        nameInputB2.value = state.playersB[1 - state.evenCourtPlayerIndexB];
+    }
+
+    // Server Indicator
+    // Hide all first
+    dotAEven.classList.add('hidden');
+    dotAOdd.classList.add('hidden');
+    dotBEven.classList.add('hidden');
+    dotBOdd.classList.add('hidden');
+
+    if (state.servingTeam === 'A') {
+        // Who is serving? 
+        // If scoreA is Even -> Even Box gets dot.
+        // If scoreA is Odd -> Odd Box gets dot.
+        if (state.scoreA % 2 === 0) dotAEven.classList.remove('hidden');
+        else dotAOdd.classList.remove('hidden');
+    } else {
+        if (state.scoreB % 2 === 0) dotBEven.classList.remove('hidden');
+        else dotBOdd.classList.remove('hidden');
+    }
 }
 
 // Run
