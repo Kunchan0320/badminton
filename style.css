@@ -182,12 +182,11 @@ html {
   color: var(--color-team-b);
 }
 
-/* Score Controls ( +/- Buttons ) */
+/* Score Controls */
 .score-controls {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 30px;
   margin-top: 20px;
 }
 
@@ -196,8 +195,6 @@ html {
   border: 2px solid rgba(255, 255, 255, 0.2);
   color: var(--text-primary);
   border-radius: 50%;
-  width: 60px;
-  height: 60px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -211,19 +208,12 @@ html {
 }
 
 .plus-btn {
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 100px;
   background: rgba(255, 255, 255, 0.15);
   border-color: rgba(255, 255, 255, 0.4);
 }
 
-.minus-btn {
-  opacity: 0.6;
-}
-
-.minus-btn:hover {
-  opacity: 1;
-}
 
 /* Center Controls (Reset, Swap, Undo) */
 .center-controls {
@@ -326,12 +316,16 @@ html {
   transform: scale(0.98);
 }
 
-/* Mobile Responsive Adjustments (Ideally for landscape) */
+/* Mobile Responsive Adjustments (Portrait) */
 @media (max-width: 768px) and (orientation: portrait) {
-
-  /* Fallback or if user holds vertically */
   .app-container {
     flex-direction: column;
+  }
+
+  .team-section {
+    justify-content: flex-start;
+    /* Stack from top instead of center */
+    padding-top: 10px;
   }
 
   .team-a {
@@ -339,22 +333,52 @@ html {
     border-bottom: 2px solid rgba(255, 255, 255, 0.1);
   }
 
+  /* Reset absolute positioning for header in portrait to avoid overlap */
+  .team-header {
+    position: relative;
+    top: auto;
+    margin-bottom: 10px;
+  }
+
+  .court-container {
+    margin-top: 0;
+    /* No need for spacer since header is relative */
+    width: 80%;
+    /* Wider on mobile */
+    gap: 4px;
+    margin-bottom: 5px;
+  }
+
+  .court-box {
+    height: 35px;
+    padding: 4px 10px;
+  }
+
+  .player-name {
+    font-size: 0.9rem;
+  }
+
   .score-display {
-    font-size: 8rem;
+    font-size: 6rem;
+    /* Smaller score to fit everything */
+    margin-bottom: 10px;
   }
 
   .center-controls {
-    bottom: 10px;
-    padding: 5px 15px;
+    bottom: 20px;
+    /* Adjust if needed */
+    padding: 8px 16px;
   }
 
   .control-btn {
-    width: 50px;
-    height: 50px;
+    width: 45px;
+    height: 45px;
   }
 
   .plus-btn {
-    width: 65px;
-    height: 65px;
+    width: 60px;
+    height: 60px;
   }
+
+  /* Hide server dots on portrait if they clutter? No, keep them. */
 }
