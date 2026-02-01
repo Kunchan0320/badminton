@@ -45,107 +45,111 @@ html {
 /* Team Sections */
 /* Team Sections */
 /* Team Sections */
+/* Team Sections */
 .team-section {
   flex: 1;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  /* Header on Top, Content Below */
   align-items: center;
-  /* Vertically Center */
-  justify-content: space-between;
-  padding: 0 20px;
-  /* Reset padding */
+  justify-content: flex-start;
+  /* Start from top */
+  padding: 0;
+  /* Remove padding to let header fill width */
   position: relative;
   transition: background-color 0.2s ease;
   user-select: none;
   height: 100%;
+  border-right: 2px solid rgba(0, 0, 0, 0.5);
+  /* Divider */
 }
 
+/* Specific Border Handling */
 .team-a {
   background-color: var(--color-team-a-dim);
-  border-right: 2px solid rgba(255, 255, 255, 0.1);
-  /* Info on Left (Default), Score on Right */
 }
 
 .team-b {
   background-color: var(--color-team-b-dim);
-  flex-direction: row-reverse;
-  /* Info on Right, Score on Left (Center) */
-}
-
-/* Info Wrapper */
-.info-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 15px;
-  width: 40%;
-  /* Shrink slightly more to give room for score */
-  max-width: 220px;
-  /* Restrict width */
+  border-right: none;
 }
 
 /* Team Header */
 .team-header {
-  position: relative;
-  top: auto;
   width: 100%;
-  padding: 0;
+  height: 60px;
+  /* Fixed header height */
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 10;
+  background-color: rgba(0, 0, 0, 0.2);
+  /* Slight darken for header area */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0 20px;
 }
 
-.team-title-row {
+/* Team Content Wrapper (Holds Courts + Score) */
+.team-content {
+  flex: 1;
+  /* Take remaining height */
+  width: 100%;
   display: flex;
-  align-items: center;
-  gap: 10px;
+  flex-direction: row;
+  /* Default: Courts Left, Score Right */
+  align-items: stretch;
 }
 
-.team-label {
-  font-size: 1.2rem;
-  /* Slightly smaller title */
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.7);
+.team-b .team-content {
+  flex-direction: row-reverse;
+  /* Score Left, Courts Right for Team B */
 }
 
-.edit-btn {
-  background: transparent;
-  border: none;
-  color: rgba(255, 255, 255, 0.5);
-  cursor: pointer;
-  margin-left: 5px;
-}
-
-/* Court Container (Doubles) */
+/* Info Wrapper Removed / Replaced by Court Container Styling */
+/* Court Container (Players) */
 .court-container {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  width: 100%;
-  margin-bottom: 0;
-  margin-top: 0;
+  justify-content: space-evenly;
+  /* Evenly space the 2 boxes vertical */
+  gap: 0;
+  width: 40%;
+  /* Players take 40% width */
+  padding: 10px;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  /* Separator line between players and score */
 }
 
+.team-b .court-container {
+  border-right: none;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  /* Separator on left for Team B */
+}
+
+/* Removed old header positioning */
+
+/* Court Box */
 .court-box {
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(255, 255, 255, 0.05);
+  /* Lighter background */
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  padding: 4px 8px;
-  /* More compact padding */
+  border-radius: 12px;
+  padding: 15px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  /* Stack label and name */
+  justify-content: center;
+  align-items: flex-start;
   position: relative;
-  height: 36px;
-  /* Reduced height */
+  height: 40%;
+  /* Fill significant portion of height */
+  width: 100%;
 }
 
 .court-label {
-  font-size: 0.7rem;
-  color: rgba(255, 255, 255, 0.4);
-  margin-right: 5px;
-  width: 30px;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 5px;
+  width: auto;
 }
 
 .player-name {
@@ -153,36 +157,36 @@ html {
   border: none;
   color: var(--text-primary);
   font-family: var(--font-main);
-  font-size: 0.9rem;
-  /* Smaller font */
-  flex-grow: 1;
+  font-size: 1.5rem;
+  /* Larger font */
+  width: 100%;
   text-align: left;
   outline: none;
   pointer-events: none;
   /* Default readonly */
-  font-weight: 500;
+  font-weight: 700;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  border-bottom: 2px solid transparent;
+  /* Prepare for edit underlining */
 }
 
-.player-name.editable {
-  pointer-events: auto;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
-  background: rgba(255, 255, 255, 0.1);
-}
-
-/* Server Dot Indicator (Individual) */
+/* Server Dot Indicator */
 .server-dot {
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   background-color: #ffda00;
-  /* Yellow highlight for server */
+  /* Yellow highlight */
   border-radius: 50%;
   box-shadow: 0 0 8px rgba(255, 218, 0, 0.8);
-  opacity: 1;
   position: absolute;
-  right: 6px;
+  right: 15px;
+  /* Same as padding */
+  top: 50%;
+  transform: translateY(-50%);
+  transition: opacity 0.2s;
+  pointer-events: none;
 }
 
 .server-dot.hidden {
@@ -191,41 +195,37 @@ html {
 
 /* Score Display */
 .score-display {
-  font-size: 35vh;
-  /* Massive font */
+  font-size: 40vh;
+  /* Huge font */
   font-weight: 900;
   line-height: 1;
   text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  margin-bottom: 0px;
+  margin: 0;
   cursor: pointer;
-  /* Clickable */
-  transition: transform 0.1s ease;
-  flex: 1;
-  /* Allow it to take remaining space */
+  width: 60%;
+  /* Score takes 60% width */
   display: flex;
-  justify-content: flex-end;
-  /* Push content towards the 'end' (Center line) */
+  justify-content: center;
+  /* Center horizontally in its box */
   align-items: center;
+  /* Center vertically */
   overflow: hidden;
-  /* Prevent spill */
 }
 
 .score-display:active {
-  transform: scale(0.95);
-  /* Click feedback */
+  transform: scale(0.98);
 }
 
 .team-a .score-display {
   color: var(--color-team-a);
-  padding-right: 5px;
-  /* Tighter to center */
+  padding: 0;
+  /* Centered in its flex item */
 }
 
 .team-b .score-display {
   color: var(--color-team-b);
-  padding-left: 5px;
-  /* Tighter to center */
-  /* Note: In row-reverse, padding-left is physically on the left, which is the center line */
+  padding: 0;
+  /* Centered in its flex item */
 }
 
 /* Center Controls (Collapsible Menu) */

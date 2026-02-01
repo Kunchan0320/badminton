@@ -143,11 +143,11 @@ function checkWinner() {
     let winnerName = "";
     if (scoreA >= 21 || scoreB >= 21) {
         const diff = Math.abs(scoreA - scoreB);
-        if (scoreA === MAX_SCORE) { hasWinner = true; winnerName = "Team A"; }
-        else if (scoreB === MAX_SCORE) { hasWinner = true; winnerName = "Team B"; }
+        if (scoreA === MAX_SCORE) { hasWinner = true; winnerName = state.teamNameA; }
+        else if (scoreB === MAX_SCORE) { hasWinner = true; winnerName = state.teamNameB; }
         else if (diff >= 2) {
             hasWinner = true;
-            winnerName = scoreA > scoreB ? "Team A" : "Team B";
+            winnerName = scoreA > scoreB ? state.teamNameA : state.teamNameB;
         }
     }
 
@@ -169,6 +169,8 @@ function undoLastAction() {
     state.evenCourtPlayerIndexB = lastState.evenCourtPlayerIndexB;
     state.playersA = [...lastState.playersA]; // copy back
     state.playersB = [...lastState.playersB];
+    state.teamNameA = lastState.teamNameA;
+    state.teamNameB = lastState.teamNameB;
 
     state.gameEnded = false;
     modal.classList.add('hidden');
@@ -185,6 +187,11 @@ function resetGame() {
     state.evenCourtPlayerIndexA = 0;
     state.evenCourtPlayerIndexB = 0;
     state.servingTeam = 'A'; // Default to A first? Or random? Let's say A.
+    // Reset names? Maybe not if user edited them (if we allowed editing).
+    // But since we just swap, maybe we should reset to default "Team A"/"Team B" if physically reset?
+    // User expectation for "Reset": New Game.
+    // If they swapped, maybe they want to keep the swap?
+    // Let's keep current names as is, just reset scores.
 
     render();
 }
@@ -200,6 +207,11 @@ function swapSides() {
     const tempPlayers = [...state.playersA];
     state.playersA = [...state.playersB];
     state.playersB = tempPlayers;
+
+    // Swap Team Names
+    const tempName = state.teamNameA;
+    state.teamNameA = state.teamNameB;
+    state.teamNameB = tempName;
 
     // Swap Positions indices
     const tempIndex = state.evenCourtPlayerIndexA;
