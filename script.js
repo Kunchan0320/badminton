@@ -8,6 +8,10 @@ let state = {
     playersA: ['Player A1', 'Player A2'],
     playersB: ['Player B1', 'Player B2'],
 
+    // Team Names
+    teamNameA: "Team A",
+    teamNameB: "Team B",
+
     // Who is currently in the EVEN court? (Index 0 or 1 of players array)
     // Initially A1 (0) in Even, A2 (1) in Odd.
     evenCourtPlayerIndexA: 0,
@@ -225,9 +229,13 @@ function swapSides() {
     render();
 }
 
+const teamInputA = document.getElementById('team-name-a');
+const teamInputB = document.getElementById('team-name-b');
+
 function toggleEditNames() {
     state.editingNames = !state.editingNames;
-    const inputs = document.querySelectorAll('.player-name');
+    const inputs = document.querySelectorAll('.player-name, .team-label'); // Select both players and team names
+
     inputs.forEach(input => {
         if (state.editingNames) {
             input.classList.add('editable');
@@ -235,13 +243,22 @@ function toggleEditNames() {
         } else {
             input.classList.remove('editable');
             input.setAttribute('readonly', true);
-            // Save names to state
-            state.playersA[0] = nameInputA1.value;
-            state.playersA[1] = nameInputA2.value;
-            state.playersB[0] = nameInputB1.value;
-            state.playersB[1] = nameInputB2.value;
         }
     });
+
+    // Save on close
+    if (!state.editingNames) {
+        // Save Team Names
+        state.teamNameA = teamInputA.value;
+        state.teamNameB = teamInputB.value;
+
+        // Save Player Names (Map input back to correct index)
+        state.playersA[state.evenCourtPlayerIndexA] = nameInputA1.value;
+        state.playersA[1 - state.evenCourtPlayerIndexA] = nameInputA2.value;
+
+        state.playersB[state.evenCourtPlayerIndexB] = nameInputB1.value;
+        state.playersB[1 - state.evenCourtPlayerIndexB] = nameInputB2.value;
+    }
 }
 
 // Helpers
@@ -275,10 +292,15 @@ function render() {
 
     // Update Names values if not editing (to sync with state)
     if (!state.editingNames) {
-        nameInputA1.value = state.playersA[0];
-        nameInputA2.value = state.playersA[1];
-        nameInputB1.value = state.playersB[0];
-        nameInputB2.value = state.playersB[1];
+        if (teamInputA) teamInputA.value = state.teamNameA;
+        if (teamInputB) teamInputB.value = state.teamNameB;
+
+        // Render Players based on Position
+        nameInputA1.value = state.playersA[state.evenCourtPlayerIndexA];
+        nameInputA2.value = state.playersA[1 - state.evenCourtPlayerIndexA];
+
+        nameInputB1.value = state.playersB[state.evenCourtPlayerIndexB];
+        nameInputB2.value = state.playersB[1 - state.evenCourtPlayerIndexB];
     }
 
     // Render Positions & Server Dot
@@ -292,13 +314,6 @@ function render() {
     // So current Even Box Name = playersA[state.evenCourtPlayerIndexA]
     // Current Odd Box Name = playersA[1 - state.evenCourtPlayerIndexA]
 
-    if (!state.editingNames) {
-        nameInputA1.value = state.playersA[state.evenCourtPlayerIndexA];
-        nameInputA2.value = state.playersA[1 - state.evenCourtPlayerIndexA];
-
-        nameInputB1.value = state.playersB[state.evenCourtPlayerIndexB];
-        nameInputB2.value = state.playersB[1 - state.evenCourtPlayerIndexB];
-    }
 
     // Server Indicator
     // Hide all first

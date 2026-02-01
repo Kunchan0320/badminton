@@ -145,6 +145,24 @@ html {
   width: 100%;
 }
 
+.team-label {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+  background: transparent;
+  border: none;
+  width: auto;
+  min-width: 100px;
+  text-align: center;
+  outline: none;
+  font-family: var(--font-main);
+}
+
+.team-label.editable {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.1);
+}
+
 .court-label {
   font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.6);
