@@ -65,6 +65,7 @@ const finalScore = document.getElementById('final-score');
 
 // Initialization
 function init() {
+    loadStateFromLocal(); // Try to load saved state first
     render();
 }
 
@@ -457,6 +458,9 @@ function render() {
         if (state.scoreB % 2 === 0) dotBEven.classList.remove('hidden');
         else dotBOdd.classList.remove('hidden');
     }
+
+    // Auto-save on every render (which happens on every state change)
+    saveStateToLocal();
 }
 
 // Menu Toggle Logic
@@ -478,6 +482,83 @@ document.addEventListener('click', function (event) {
         toggleMenu();
     }
 });
+
+// --- Data Persistence & Export/Import ---
+
+const STORAGE_KEY = 'badminton_score_state';
+
+function saveStateToLocal() {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (e) {
+        console.error('Save failed:', e);
+    }
+}
+
+function loadStateFromLocal() {
+    try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            // Basic validation or merging could go here
+            // For now, we trust the local storage if it exists
+            state = { ...state, ...parsed };
+        }
+    } catch (e) {
+        console.error('Load failed:', e);
+    }
+}
+
+function exportData() {
+    const dataStr = JSON.stringify(state, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    // Create time-stamped filename
+    const date = new Date();
+    const timestamp = date.toISOString().replace(/[:.]/g, '-').slice(0, 19);
+    const filename = `badminton-score-${timestamp}.json`;
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+function triggerImport() {
+    document.getElementById('import-file').click();
+}
+
+function importData(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        try {
+            const importedState = JSON.parse(e.target.result);
+
+            // Simple validation: check if basic keys exist
+            if ('scoreA' in importedState && 'playersA' in importedState) {
+                state = importedState;
+                saveStateToLocal(); // Save immediately
+                render();
+                alert('資料讀取成功！');
+            } else {
+                alert('檔案格式錯誤，無法讀取。');
+            }
+        } catch (e) {
+            console.error('Import error:', e);
+            alert('讀取失敗：檔案格式無效。');
+        }
+        // Reset input so same file can be selected again if needed
+        input.value = '';
+    };
+    reader.readAsText(file);
+}
 
 // Run
 init();
