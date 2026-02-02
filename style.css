@@ -466,11 +466,110 @@ html {
   transition: transform 0.2s;
 }
 
-.modal-content button:active {
-  transform: scale(0.98);
+.player-select {
+  font-family: var(--font-main);
+  font-size: 1.1rem;
+  width: 100%;
+  padding: 5px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #000;
+  /* Dark text for readability in dropdown */
+  border: none;
+  border-radius: 4px;
+  outline: none;
+  z-index: 5;
 }
 
-/* Mobile Responsive Adjustments (Portrait) */
+.player-select.hidden {
+  display: none;
+}
+
+/* Modal Extensions */
+.modal-content.large {
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.manage-input-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+.manage-input-row input {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 1rem;
+  text-align: center;
+  width: 60%;
+}
+
+.manage-input-row .add-btn {
+  padding: 10px 20px;
+  background: #4ade80;
+  /* Green */
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.manage-input-row .add-btn:active {
+  transform: scale(0.95);
+}
+
+.roster-list {
+  list-style: none;
+  overflow-y: auto;
+  flex: 1;
+  text-align: left;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 20px;
+}
+
+.roster-item {
+  padding: 12px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.2rem;
+}
+
+.roster-item .delete-btn {
+  background: transparent;
+  color: #ff6b6b;
+  border: 1px solid #ff6b6b;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.close-btn {
+  margin-top: auto;
+  background-color: var(--text-primary);
+  color: #000;
+  border: none;
+  padding: 12px 32px;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
 @media (max-width: 768px) and (orientation: portrait) {
   .app-container {
     flex-direction: column;

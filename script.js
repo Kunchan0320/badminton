@@ -12,6 +12,8 @@ let state = {
     teamNameA: "Team A",
     teamNameB: "Team B",
 
+    roster: ['A1', 'A2', 'B1', 'B2', 'Jimmy', 'Alex', 'Energy', 'Wang'], // Default Roster
+
     // Who is currently in the EVEN court? (Index 0 or 1 of players array)
     // Initially A1 (0) in Even, A2 (1) in Odd.
     evenCourtPlayerIndexA: 0,
@@ -41,6 +43,15 @@ const nameInputA1 = document.getElementById('name-a1');
 const nameInputA2 = document.getElementById('name-a2');
 const nameInputB1 = document.getElementById('name-b1');
 const nameInputB2 = document.getElementById('name-b2');
+
+const selectA1 = document.getElementById('select-a1');
+const selectA2 = document.getElementById('select-a2');
+const selectB1 = document.getElementById('select-b1');
+const selectB2 = document.getElementById('select-b2');
+
+const playerManagerModal = document.getElementById('player-manager-modal');
+const rosterList = document.getElementById('player-roster-list');
+const newPlayerInput = document.getElementById('new-player-name');
 
 // Server Dots
 const dotAEven = document.getElementById('server-a-even');
@@ -173,8 +184,10 @@ function undoLastAction() {
     state.evenCourtPlayerIndexB = lastState.evenCourtPlayerIndexB;
     state.playersA = [...lastState.playersA]; // copy back
     state.playersB = [...lastState.playersB];
-    state.teamNameA = lastState.teamNameA;
-    state.teamNameB = lastState.teamNameB;
+
+    // Restore Team Names (Handle legacy history without names)
+    if (lastState.teamNameA) state.teamNameA = lastState.teamNameA;
+    if (lastState.teamNameB) state.teamNameB = lastState.teamNameB;
 
     state.gameEnded = false;
     modal.classList.add('hidden');
@@ -232,33 +245,137 @@ function swapSides() {
 const teamInputA = document.getElementById('team-name-a');
 const teamInputB = document.getElementById('team-name-b');
 
+// Edit Logic
 function toggleEditNames() {
     state.editingNames = !state.editingNames;
-    const inputs = document.querySelectorAll('.player-name, .team-label'); // Select both players and team names
+    const inputs = document.querySelectorAll('.player-name, .team-label');
 
-    inputs.forEach(input => {
-        if (state.editingNames) {
-            input.classList.add('editable');
-            input.removeAttribute('readonly');
-        } else {
-            input.classList.remove('editable');
-            input.setAttribute('readonly', true);
-        }
-    });
+    // Also toggle Selects
+    const playerInputs = [nameInputA1, nameInputA2, nameInputB1, nameInputB2];
+    const playerSelects = [selectA1, selectA2, selectB1, selectB2];
 
-    // Save on close
-    if (!state.editingNames) {
-        // Save Team Names
+    if (state.editingNames) {
+        // Entering Edit Mode
+        // 1. Populate Selects from Roster
+        populateSelects();
+
+        // 2. Hide Inputs, Show Selects
+        playerInputs.forEach((inp, idx) => {
+            inp.classList.add('hidden');
+            const sel = playerSelects[idx];
+            sel.classList.remove('hidden');
+            // Set current value
+            sel.value = inp.value;
+            // If current value is not in roster, maybe add it temporary? 
+            // For now if not found, it might show empty. Let's ensure it exists or "Custom".
+            if (sel.value !== inp.value) {
+                // Value missing from options, add it temporary
+                const opt = document.createElement('option');
+                opt.value = inp.value;
+                opt.text = inp.value;
+                sel.add(opt);
+                sel.value = inp.value;
+            }
+        });
+
+        // 3. Team Labels (keep as text inputs)
+        document.querySelectorAll('.team-label').forEach(inp => {
+            inp.classList.add('editable');
+            inp.removeAttribute('readonly');
+        });
+
+    } else {
+        // Saving / Exiting Edit Mode
+        // 1. Save Team Names
         state.teamNameA = teamInputA.value;
         state.teamNameB = teamInputB.value;
 
-        // Save Player Names (Map input back to correct index)
+        // 2. Save Player Names from Selects
+        // Get values from Selects
+        const valA1 = selectA1.value;
+        const valA2 = selectA2.value;
+        const valB1 = selectB1.value;
+        const valB2 = selectB2.value;
+
+        // Map back to inputs (visual only, render will overwrite really)
+        nameInputA1.value = valA1;
+        nameInputA2.value = valA2;
+        nameInputB1.value = valB1;
+        nameInputB2.value = valB2;
+
+        // Save to State (based on position indices)
+        // Let's re-verify DOM mapping:
+        // name-a1 is in .even-court. 
+        // name-a2 is in .odd-court.
+        // In State: playersA[state.evenCourtPlayerIndexA] is the player in Even Court.
+        // So nameInputA1 should correspond to that player.
+        // Correct.
         state.playersA[state.evenCourtPlayerIndexA] = nameInputA1.value;
         state.playersA[1 - state.evenCourtPlayerIndexA] = nameInputA2.value;
-
         state.playersB[state.evenCourtPlayerIndexB] = nameInputB1.value;
         state.playersB[1 - state.evenCourtPlayerIndexB] = nameInputB2.value;
+
+        // 3. Hide Selects, Show Inputs
+        playerInputs.forEach(inp => inp.classList.remove('hidden'));
+        playerSelects.forEach(sel => sel.classList.add('hidden'));
+
+        // 4. Reset Team Labels
+        document.querySelectorAll('.team-label').forEach(inp => {
+            inp.classList.remove('editable');
+            inp.setAttribute('readonly', true);
+        });
+
+        render();
     }
+}
+
+function populateSelects() {
+    [selectA1, selectA2, selectB1, selectB2].forEach(sel => {
+        sel.innerHTML = '';
+        state.roster.forEach(name => {
+            const opt = document.createElement('option');
+            opt.value = name;
+            opt.text = name;
+            sel.appendChild(opt);
+        });
+    });
+}
+
+// Player Management
+function openPlayerManager() {
+    renderRosterList();
+    playerManagerModal.classList.remove('hidden');
+}
+
+function closePlayerManager() {
+    playerManagerModal.classList.add('hidden');
+}
+
+function renderRosterList() {
+    rosterList.innerHTML = '';
+    state.roster.forEach((name, index) => {
+        const li = document.createElement('li');
+        li.className = 'roster-item';
+        li.innerHTML = `
+            <span>${name}</span>
+            <button class="delete-btn" onclick="removePlayerFromRoster(${index})">×</button>
+        `;
+        rosterList.appendChild(li);
+    });
+}
+
+function addPlayerToRoster() {
+    const name = newPlayerInput.value.trim();
+    if (name && !state.roster.includes(name)) {
+        state.roster.push(name);
+        newPlayerInput.value = '';
+        renderRosterList();
+    }
+}
+
+function removePlayerFromRoster(index) {
+    state.roster.splice(index, 1);
+    renderRosterList();
 }
 
 // Helpers
@@ -270,7 +387,9 @@ function pushHistory() {
         evenCourtPlayerIndexA: state.evenCourtPlayerIndexA,
         evenCourtPlayerIndexB: state.evenCourtPlayerIndexB,
         playersA: [...state.playersA],
-        playersB: [...state.playersB]
+        playersB: [...state.playersB],
+        teamNameA: state.teamNameA,
+        teamNameB: state.teamNameB
     });
     if (state.history.length > 50) state.history.shift();
 }
